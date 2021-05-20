@@ -47,7 +47,7 @@ function ContactForm() {
               <TextField
                 label="Correo"
                 name="email"
-                type="email"
+                type="text"
                 placeholder="Ingresa tu correo"
               />
               <TextArea label="Mensaje" name="message" rows="6" />

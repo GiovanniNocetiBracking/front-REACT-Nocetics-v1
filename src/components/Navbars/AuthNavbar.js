@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 // components
@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import PagesDropdown from "components/Dropdowns/PagesDropdown.js";
 
 export default function Navbar(props) {
-  const [navbarOpen, setNavbarOpen] = React.useState(false);
+  const [navbarOpen, setNavbarOpen] = useState(false);
   return (
     <>
       <nav className="top-0 absolute z-50 w-full flex flex-wrap items-center justify-between px-2 py-3 navbar-expand-lg">
@@ -29,7 +29,7 @@ export default function Navbar(props) {
           </div>
           <div
             className={
-              "lg:flex flex-grow items-center bg-white lg:bg-opacity-0 lg:shadow-none" +
+              "lg:flex flex-grow items-center bg-white lg:bg-opacity-0 lg:shadow-none xl:bg-opacity-0 xl:shadow-none" +
               (navbarOpen ? " block rounded shadow-lg" : " hidden")
             }
             id="example-navbar-warning"

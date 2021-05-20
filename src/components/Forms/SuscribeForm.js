@@ -32,7 +32,7 @@ function SuscribeForm() {
               <TextField
                 label="Correo"
                 name="email"
-                type="email"
+                type="text"
                 placeholder="Ingresa tu correo"
               />
               <div className="text-center mt-6">
