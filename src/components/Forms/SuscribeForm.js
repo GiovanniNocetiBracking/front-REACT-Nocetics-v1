@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { TextField } from "components/Forms/TextField";
+import axios from "axios";
 
 function SuscribeForm() {
   const validate = yup.object({
@@ -17,8 +18,16 @@ function SuscribeForm() {
           email: "",
         }}
         validationSchema={validate}
-        onSubmit={(values) => {
-          console.log(values);
+        onSubmit={async (values) => {
+          const apiUrl = process.env.REACT_APP_URL_API;
+          try {
+            const res = await axios.post(apiUrl + "/landing/suscribe", values);
+
+            console.log(res);
+            console.log(res.data);
+          } catch (error) {
+            console.log(error);
+          }
         }}
       >
         {(formik) => (

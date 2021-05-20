@@ -4,9 +4,15 @@ import * as yup from "yup";
 import { TextField } from "components/Forms/TextField";
 import { TextArea } from "components/Forms/TextArea";
 
+import axios from "axios";
+
 function ContactForm() {
   const validate = yup.object({
     name: yup.string().required("El campo nombre es requerido"),
+    subject: yup
+      .string()
+      .required("El campo asunto es requerido")
+      .max(50, "Maximo 50 caracteres"),
     email: yup
       .string()
       .email("Pruebe con un correo valido")
@@ -22,12 +28,20 @@ function ContactForm() {
       <Formik
         initialValues={{
           name: "",
+          subject: "",
           email: "",
           message: "",
         }}
         validationSchema={validate}
-        onSubmit={(values) => {
-          console.log(values);
+        onSubmit={async (values) => {
+          const apiUrl = process.env.REACT_APP_URL_API;
+          try {
+            const res = await axios.post(apiUrl + "/landing/contactUs", values);
+            console.log(res);
+            console.log(res.data);
+          } catch (error) {
+            console.log(error);
+          }
         }}
       >
         {(formik) => (
@@ -43,6 +57,12 @@ function ContactForm() {
                 name="name"
                 type="text"
                 placeholder="Ingresa tu nombre"
+              />
+              <TextField
+                label="Asunto"
+                name="subject"
+                type="text"
+                placeholder="Asunto"
               />
               <TextField
                 label="Correo"
