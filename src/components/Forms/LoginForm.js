@@ -1,11 +1,12 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Formik, Form, Field } from "formik";
+import React, { useState } from "react";
+import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { TextField } from "components/Forms/TextField";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 function LoginForm() {
+  const [loading, setLoading] = useState(false);
   const validate = yup.object({
     email: yup
       .string()
@@ -23,13 +24,26 @@ function LoginForm() {
           }}
           validationSchema={validate}
           onSubmit={async (values, actions) => {
+            setLoading(true);
             const apiUrl = process.env.REACT_APP_URL_API;
             try {
-              const res = await axios.post(apiUrl + "/auth/login", values);
-              actions.resetForm();
-              console.log(res.data);
+              const res = await axios
+                .post(apiUrl + "/auth/login", values)
+                .then(({ data }) => {
+                  actions.resetForm();
+                  if (data.token != null) {
+                    toast.success("Iniciaste sesion", {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                    });
+                  } else {
+                    toast.error("El usuario y la contraseña no coinciden", {
+                      position: toast.POSITION.BOTTOM_RIGHT,
+                    });
+                  }
+                });
+              setLoading(false);
             } catch (error) {
-              console.log(error);
+              setLoading(false);
             }
           }}
         >
@@ -54,11 +68,15 @@ function LoginForm() {
 
                 <div className="text-center mt-6">
                   <button
+                    disabled={loading}
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                     type="submit"
                   >
                     Ingresar
                   </button>
+                  {loading && <h1>Enviando! ....</h1>}
+
+                  <ToastContainer />
                 </div>
               </Form>
             </div>

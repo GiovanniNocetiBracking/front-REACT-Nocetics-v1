@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import { TextField } from "components/Forms/TextField";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 function RegisterForm() {
+  const [loading, setLoading] = useState(false);
   const validate = yup.object({
     username: yup.string().required("El campo nombre es requerido"),
 
@@ -25,12 +27,30 @@ function RegisterForm() {
         }}
         validationSchema={validate}
         onSubmit={async (values, actions) => {
+          setLoading(true);
           const apiUrl = process.env.REACT_APP_URL_API;
           try {
-            const res = await axios.post(apiUrl + "/auth/register", values);
-            actions.resetForm();
+            const res = await axios
+              .post(apiUrl + "/auth/register", values)
+              .then(({ data }) => {
+                console.log(data);
+                actions.resetForm();
+                if (!data[0]._errorMessages) {
+                  toast.success(data[1].registrado, {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                  });
+                } else {
+                  toast.error(data[0]._errorMessages[0].message, {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                  });
+                }
+              });
+            setLoading(false);
           } catch (error) {
-            console.log(error);
+            toast.error(error, {
+              position: toast.POSITION.BOTTOM_RIGHT,
+            });
+            setLoading(false);
           }
         }}
       >
@@ -68,11 +88,14 @@ function RegisterForm() {
               </div>
               <div className="text-center mt-6">
                 <button
+                  disabled={loading}
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                   type="submit"
                 >
                   Completar registro
                 </button>
+                {loading && <h1>Enviando !! ...</h1>}
+                <ToastContainer />
               </div>
             </Form>
           </div>

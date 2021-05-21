@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form } from "formik";
 import * as yup from "yup";
 import { TextField } from "components/Forms/TextField";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 function SuscribeForm() {
+  const [loading, setLoading] = useState(false);
   const validate = yup.object({
     email: yup
       .string()
@@ -18,15 +20,28 @@ function SuscribeForm() {
           email: "",
         }}
         validationSchema={validate}
-        onSubmit={async (values) => {
+        onSubmit={async (values, actions) => {
+          setLoading(true);
           const apiUrl = process.env.REACT_APP_URL_API;
           try {
-            const res = await axios.post(apiUrl + "/landing/suscribe", values);
-
-            console.log(res);
-            console.log(res.data);
+            const res = await axios
+              .post(apiUrl + "/landing/suscribe", values)
+              .then(({ data }) => {
+                actions.resetForm();
+                if (data._errorMessages) {
+                  toast.error(data._errorMessages[0].message, {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                  });
+                } else {
+                  toast.success("Muchas gracias por suscribirte!", {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                  });
+                }
+              });
+            setLoading(false);
           } catch (error) {
             console.log(error);
+            setLoading(false);
           }
         }}
       >
@@ -46,11 +61,14 @@ function SuscribeForm() {
               />
               <div className="text-center mt-6">
                 <button
+                  disabled={loading}
                   className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="submit"
                 >
                   Enviar!
                 </button>
+                {loading && <h1>Enviando !! ...</h1>}
+                <ToastContainer />
               </div>
             </Form>
           </div>
