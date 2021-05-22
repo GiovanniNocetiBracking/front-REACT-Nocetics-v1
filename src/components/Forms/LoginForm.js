@@ -44,6 +44,10 @@ function LoginForm() {
                     toast.success("Iniciaste sesion", {
                       position: toast.POSITION.BOTTOM_RIGHT,
                     });
+                    localStorage.setItem(
+                      "loginUserCredentials",
+                      JSON.stringify(data)
+                    );
                   } else {
                     toast.error("El usuario y la contraseña no coinciden", {
                       position: toast.POSITION.BOTTOM_RIGHT,
