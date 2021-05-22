@@ -45,7 +45,7 @@ function RegisterForm() {
               .then(({ data }) => {
                 console.log(data);
                 actions.resetForm();
-                if (!data[0]._errorMessages[1]) {
+                if (!data[0]._errorMessages) {
                   toast.success(data[1].registrado, {
                     position: toast.POSITION.BOTTOM_RIGHT,
                   });
